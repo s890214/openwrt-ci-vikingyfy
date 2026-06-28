@@ -125,6 +125,8 @@ jobs:
 
           $GITHUB_WORKSPACE/Scripts/Settings.sh
 
+          # 首次编译无 cache 时 tmp/.build 不存在，defconfig 会重新扫描 metadata 导致部分包 Config.in 解析失败
+          mkdir -p tmp && [ ! -f tmp/.build ] && echo "1" > tmp/.build
           make defconfig -j$(nproc) && make clean -j$(nproc)
 
       - name: Download Packages
