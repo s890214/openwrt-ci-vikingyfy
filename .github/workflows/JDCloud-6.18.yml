@@ -121,15 +121,6 @@ jobs:
         run: |
           cd ./wrt/
 
-          # Debug: 生成 .config-package.in 并查看有问题的行
-          make prepare-tmpinfo 2>/dev/null || true
-          echo "=== .config-package.in lines 72010-72025 ==="
-          sed -n '72010,72025p' tmp/.config-package.in 2>/dev/null || echo "file not found"
-          echo "=== .config-package.in lines 145348-145360 ==="
-          sed -n '145348,145360p' tmp/.config-package.in 2>/dev/null || echo "file not found"
-          echo "=== .config-package.in lines 151565-151580 ==="
-          sed -n '151565,151580p' tmp/.config-package.in 2>/dev/null || echo "file not found"
-
           cat $GITHUB_WORKSPACE/Config/$WRT_CONFIG.txt $GITHUB_WORKSPACE/Config/GENERAL.txt >> .config
 
           $GITHUB_WORKSPACE/Scripts/Settings.sh
