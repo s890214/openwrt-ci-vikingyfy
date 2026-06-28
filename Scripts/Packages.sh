@@ -45,9 +45,6 @@ UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 # Lucky 多功能
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
 
-# 集客无线AC控制器
-git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
-
 # 带宽监控
 git clone --depth=1 https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-bandix
