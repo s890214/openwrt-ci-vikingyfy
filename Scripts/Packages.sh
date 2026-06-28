@@ -41,13 +41,6 @@ UPDATE_PACKAGE "luci-app-argon-config" "jerrykuku/luci-app-argon-config" "master
 UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
 UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 
-# ============ golang (laipeng668 源) ============
-rm -rf ../feeds/packages/lang/golang
-git clone --depth=1 -b master --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-golang
-cd /tmp/laipeng-golang && git sparse-checkout set lang/golang
-mv -f lang/golang $GITHUB_WORKSPACE/wrt/feeds/packages/lang/golang
-cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-golang
-
 # ============ 你的软件 ============
 # Lucky 多功能
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
