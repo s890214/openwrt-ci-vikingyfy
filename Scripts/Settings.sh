@@ -1,5 +1,5 @@
 #!/bin/bash
-# 基于 VIKINGYFY/OpenWRT-CI 的 Settings.sh
+# 固件个性化设置
 
 WRT_PATH="$GITHUB_WORKSPACE/wrt"
 
@@ -13,18 +13,8 @@ _('Firmware Version'), \\
 CFG_FILE="$WRT_PATH/package/base-files/files/bin/config_generate"
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
 
-# 修改WiFi名称和密码（6.18内核用 mac80211.uc）
-WIFI_SH=$(find $WRT_PATH/target/linux/qualcommax/base-files/etc/uci-defaults/ -type f -name "*set-wireless.sh" 2>/dev/null)
-WIFI_UC="$WRT_PATH/package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc"
-if [ -f "$WIFI_SH" ]; then
-	sed -i "s/BASE_SSID='.*'/BASE_SSID='$WRT_SSID'/g" $WIFI_SH
-	sed -i "s/BASE_WORD='.*'/BASE_WORD='$WRT_WORD'/g" $WIFI_SH
-elif [ -f "$WIFI_UC" ]; then
-	sed -i "s/ssid='.*'/ssid='$WRT_SSID'/g" $WIFI_UC
-	sed -i "s/key='.*'/key='$WRT_WORD'/g" $WIFI_UC
-	sed -i "s/country='.*'/country='CN'/g" $WIFI_UC
-	sed -i "s/encryption='.*'/encryption='psk2+ccmp'/g" $WIFI_UC
-fi
+# 安装 WiFi uci-defaults 脚本（首次启动自动配置，已配置过不覆盖）
+install -Dm544 $GITHUB_WORKSPACE/Scripts/992_set-wifi-uci.sh $WRT_PATH/package/base-files/files/etc/uci-defaults/992_set-wifi-uci.sh
 
 # 移除要替换的包（避免和 Packages.sh 里 clone 的版本冲突）
 rm -rf $WRT_PATH/feeds/luci/applications/luci-app-argon-config
