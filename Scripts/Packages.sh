@@ -40,53 +40,72 @@ UPDATE_PACKAGE() {
 	fi
 }
 
-# 主题（用你习惯的 jerrykuku 版 argon，aurora 用 VIKINGYFY 的）
+# ============ 主题 ============
 UPDATE_PACKAGE "argon" "jerrykuku/luci-theme-argon" "master"
 UPDATE_PACKAGE "luci-app-argon-config" "jerrykuku/luci-app-argon-config" "master"
 UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
 UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 
-# 代理（你的偏好：OpenClash + VIKINGYFY 的 homeproxy）
+# ============ 代理 ============
 UPDATE_PACKAGE "homeproxy" "VIKINGYFY/homeproxy" "main"
 UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "dev" "pkg"
 
-# 磁盘管理
-UPDATE_PACKAGE "diskman" "sbwml/luci-app-diskman" "main"
-
-# 你习惯的软件源（保留 laipeng668 的 frp/golang/ariang）
-# frp
+# ============ frp (laipeng668 源) ============
 rm -rf ../feeds/packages/net/frp
 git clone --depth=1 -b frp-binary-toml --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-frp
 cd /tmp/laipeng-frp && git sparse-checkout set net/frp
 mv -f net/frp $GITHUB_WORKSPACE/wrt/package/frp
 cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-frp
 
-# golang
+# frp LuCI 界面 (laipeng668 源)
+rm -rf ../feeds/luci/applications/luci-app-frpc
+rm -rf ../feeds/luci/applications/luci-app-frps
+git clone --depth=1 -b frp-toml --single-branch --filter=blob:none --sparse https://github.com/laipeng668/luci.git /tmp/laipeng-luci-frp
+cd /tmp/laipeng-luci-frp && git sparse-checkout set applications/luci-app-frpc applications/luci-app-frps
+mv -f applications/luci-app-frpc $GITHUB_WORKSPACE/wrt/feeds/luci/applications/luci-app-frpc
+mv -f applications/luci-app-frps $GITHUB_WORKSPACE/wrt/feeds/luci/applications/luci-app-frps
+cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-luci-frp
+
+# ============ golang (laipeng668 源) ============
 rm -rf ../feeds/packages/lang/golang
 git clone --depth=1 -b master --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-golang
 cd /tmp/laipeng-golang && git sparse-checkout set lang/golang
-mv -f lang/golang $GITHUB_WORKSPACE/wrt/package/golang
+mv -f lang/golang $GITHUB_WORKSPACE/wrt/feeds/packages/lang/golang
 cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-golang
 
-# ariang
+# ============ ariang (laipeng668 源) ============
 git clone --depth=1 -b ariang --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-ariang
 cd /tmp/laipeng-ariang && git sparse-checkout set net/ariang
 mv -f net/ariang $GITHUB_WORKSPACE/wrt/package/ariang
 cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-ariang
 
-# 你的其他软件
+# ============ 你的其他软件 ============
+# 磁盘管理
+UPDATE_PACKAGE "diskman" "sbwml/luci-app-diskman" "main"
+
+# OpenList
 git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist2
+
+# Lucky 多功能
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
+
+# 微信推送
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush package/luci-app-wechatpush
+
+# OpenAppFilter 上网过滤
 git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
+
+# 集客无线AC控制器
 git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
+
+# 带宽监控
 git clone --depth=1 https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-bandix
 
 # athena-led: VIKINGYFY 源码自带 package/emortal/luci-app-athena-led
 # 无需额外 clone
 
-# OpenClash 核心库替换
+# ============ OpenClash 核心库替换 ============
 rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 rm -rf ../feeds/luci/applications/luci-app-openclash
 git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
@@ -98,7 +117,7 @@ CLASH_META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/maste
 wget -qO- $CLASH_META_URL | tar xOvz > $GITHUB_WORKSPACE/wrt/files/etc/openclash/core/clash_meta
 chmod +x $GITHUB_WORKSPACE/wrt/files/etc/openclash/core/clash*
 
-# 更新 sing-box 版本
+# ============ 更新 sing-box 版本 ============
 UPDATE_VERSION() {
 	local PKG_NAME=$1
 	local PKG_MARK=${2:-false}
