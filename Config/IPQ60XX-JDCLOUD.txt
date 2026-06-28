@@ -1,0 +1,11 @@
+#设备平台
+CONFIG_TARGET_qualcommax=y
+CONFIG_TARGET_qualcommax_ipq60xx=y
+#设备列表 - 只编译 JDCloud
+CONFIG_TARGET_DEVICE_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-02=y
+
+#NSS 固件版本 (6.18 内核对应 12.5)
+CONFIG_NSS_FIRMWARE_VERSION_12_5=y
+
+#WiFi 内存配置 (512M 内存)
+CONFIG_ATH11K_MEM_PROFILE_512M=y
