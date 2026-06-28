@@ -22,7 +22,6 @@ rm -rf $WRT_PATH/feeds/luci/applications/luci-app-appfilter
 rm -rf $WRT_PATH/feeds/luci/themes/luci-theme-argon
 rm -rf $WRT_PATH/feeds/packages/net/open-app-filter
 rm -rf $WRT_PATH/feeds/packages/net/frp
-rm -rf $WRT_PATH/feeds/packages/lang/golang
 
 # 清理冗余文件
 rm -rf $WRT_PATH/feeds/luci/applications/luci-app-ssr-plus
