@@ -1,8 +1,7 @@
 #!/bin/bash
-# 基于 VIKINGYFY/OpenWRT-CI 的 Packages.sh 框架
-# 保留你的软件源偏好 + VIKINGYFY 的 UPDATE_PACKAGE 智能更新机制
+# 软件包下载和更新
 
-# 安装和更新软件包
+# 智能更新：先删 feeds 里的旧版，再 clone 新版，避免冲突
 UPDATE_PACKAGE() {
 	local PKG_NAME=$1
 	local PKG_REPO=$2
@@ -13,11 +12,9 @@ UPDATE_PACKAGE() {
 
 	echo " "
 
-	# 删除本地可能存在的不同名称的软件包
 	for NAME in "${PKG_LIST[@]}"; do
 		echo "Search directory: $NAME"
 		local FOUND_DIRS=$(find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$NAME*" 2>/dev/null)
-
 		if [ -n "$FOUND_DIRS" ]; then
 			while read -r DIR; do
 				rm -rf "$DIR"
@@ -28,10 +25,8 @@ UPDATE_PACKAGE() {
 		fi
 	done
 
-	# 克隆 GitHub 仓库
 	git clone --depth=1 --single-branch --branch $PKG_BRANCH "https://github.com/$PKG_REPO.git"
 
-	# 处理克隆的仓库
 	if [[ "$PKG_SPECIAL" == "pkg" ]]; then
 		find ./$REPO_NAME/*/ -maxdepth 3 -type d -iname "*$PKG_NAME*" -prune -exec cp -rf {} ./ \;
 		rm -rf ./$REPO_NAME/
@@ -46,26 +41,6 @@ UPDATE_PACKAGE "luci-app-argon-config" "jerrykuku/luci-app-argon-config" "master
 UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
 UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 
-# ============ 代理 ============
-UPDATE_PACKAGE "homeproxy" "VIKINGYFY/homeproxy" "main"
-UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "dev" "pkg"
-
-# ============ frp (laipeng668 源) ============
-rm -rf ../feeds/packages/net/frp
-git clone --depth=1 -b frp-binary-toml --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-frp
-cd /tmp/laipeng-frp && git sparse-checkout set net/frp
-mv -f net/frp $GITHUB_WORKSPACE/wrt/package/frp
-cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-frp
-
-# frp LuCI 界面 (laipeng668 源)
-rm -rf ../feeds/luci/applications/luci-app-frpc
-rm -rf ../feeds/luci/applications/luci-app-frps
-git clone --depth=1 -b frp-toml --single-branch --filter=blob:none --sparse https://github.com/laipeng668/luci.git /tmp/laipeng-luci-frp
-cd /tmp/laipeng-luci-frp && git sparse-checkout set applications/luci-app-frpc applications/luci-app-frps
-mv -f applications/luci-app-frpc $GITHUB_WORKSPACE/wrt/feeds/luci/applications/luci-app-frpc
-mv -f applications/luci-app-frps $GITHUB_WORKSPACE/wrt/feeds/luci/applications/luci-app-frps
-cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-luci-frp
-
 # ============ golang (laipeng668 源) ============
 rm -rf ../feeds/packages/lang/golang
 git clone --depth=1 -b master --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-golang
@@ -73,27 +48,9 @@ cd /tmp/laipeng-golang && git sparse-checkout set lang/golang
 mv -f lang/golang $GITHUB_WORKSPACE/wrt/feeds/packages/lang/golang
 cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-golang
 
-# ============ ariang (laipeng668 源) ============
-git clone --depth=1 -b ariang --single-branch --filter=blob:none --sparse https://github.com/laipeng668/packages.git /tmp/laipeng-ariang
-cd /tmp/laipeng-ariang && git sparse-checkout set net/ariang
-mv -f net/ariang $GITHUB_WORKSPACE/wrt/package/ariang
-cd $GITHUB_WORKSPACE/wrt/package/ && rm -rf /tmp/laipeng-ariang
-
-# ============ 你的其他软件 ============
-# 磁盘管理
-UPDATE_PACKAGE "diskman" "sbwml/luci-app-diskman" "main"
-
-# OpenList
-git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist2
-
+# ============ 你的软件 ============
 # Lucky 多功能
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
-
-# 微信推送
-git clone --depth=1 https://github.com/tty228/luci-app-wechatpush package/luci-app-wechatpush
-
-# OpenAppFilter 上网过滤
-git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
 # 集客无线AC控制器
 git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
@@ -102,10 +59,10 @@ git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci
 git clone --depth=1 https://github.com/timsaya/openwrt-bandix package/openwrt-bandix
 git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-bandix
 
-# athena-led: VIKINGYFY 源码自带 package/emortal/luci-app-athena-led
-# 无需额外 clone
+# athena-led: VIKINGYFY 源码自带 package/emortal/luci-app-athena-led，无需 clone
 
-# ============ OpenClash 核心库替换 ============
+# ============ OpenClash ============
+# 移除 feeds 自带的旧版核心库
 rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 rm -rf ../feeds/luci/applications/luci-app-openclash
 git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
