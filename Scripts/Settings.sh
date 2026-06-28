@@ -9,10 +9,9 @@ _('Firmware Version'), \\
 (L.isObject(boardinfo.release) ? boardinfo.release.description + ' / ' : '') + \\
 'Built by SONG88 $(date \"+%Y-%m-%d\")',#" $WRT_PATH/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
 
-# 修改默认IP和主机名
+# 修改默认IP（保持默认主机名 ImmortalWRT）
 CFG_FILE="$WRT_PATH/package/base-files/files/bin/config_generate"
 sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
-sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 
 # 修改WiFi名称和密码（6.18内核用 mac80211.uc）
 WIFI_SH=$(find $WRT_PATH/target/linux/qualcommax/base-files/etc/uci-defaults/ -type f -name "*set-wireless.sh" 2>/dev/null)
