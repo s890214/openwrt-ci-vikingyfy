@@ -173,11 +173,33 @@ jobs:
 
           find ./bin/targets/ -type f -exec mv -f {} ./upload/ \;
 
-      - name: Upload Firmware To Artifact
+      - name: Upload Factory Firmware
+        if: success()
         uses: actions/upload-artifact@main
         with:
-          name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
-          path: ./wrt/upload/*.*
+          name: factory-jdcloud_re-cs-02
+          path: ./wrt/upload/*factory*.bin
+
+      - name: Upload Sysupgrade Firmware
+        if: success()
+        uses: actions/upload-artifact@main
+        with:
+          name: sysupgrade-jdcloud_re-cs-02
+          path: ./wrt/upload/*sysupgrade*.bin
+
+      - name: Upload Manifest
+        if: success()
+        uses: actions/upload-artifact@main
+        with:
+          name: manifest
+          path: ./wrt/upload/*.manifest
+
+      - name: Upload Config
+        if: success()
+        uses: actions/upload-artifact@main
+        with:
+          name: config
+          path: ./wrt/upload/Config-*.txt
 
       - name: Delete Old Cache
         if: always()
