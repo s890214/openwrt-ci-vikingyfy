@@ -166,12 +166,17 @@ jobs:
 
           for FILE in $(find ./bin/targets/ -type f -iname "*$WRT_TARGET*") ; do
             EXT=$(basename $FILE | cut -d '.' -f 2-)
-            NAME=$(basename $FILE | cut -d '.' -f 1 | grep -io "\($WRT_TARGET\).*")
-            NEW_FILE="$NAME"-"$WRT_INFO"-"$WRT_BRANCH"-"$WRT_WIFI"-"$WRT_DATE"."$EXT"
+            ORIG=$(basename $FILE ."$EXT")
+            TYPE=$(echo "$ORIG" | grep -io 'factory\|sysupgrade\|kernel\|rootfs\|combined\|manifest' | head -1)
+            DEV=$(echo "$ORIG" | grep -io 'jdcloud[^-]*\|8devices[^-]*' | head -1)
+            [ -z "$DEV" ] && DEV="$WRT_TARGET"
+            NEW_FILE="$DEV-$TYPE-$WRT_INFO-$WRT_BRANCH-$WRT_DATE.$EXT"
             mv -f $FILE ./upload/$NEW_FILE
           done
 
-          find ./bin/targets/ -type f -exec mv -f {} ./upload/ \;
+          for FILE in $(find ./bin/targets/ -type f -name "*.manifest") ; do
+            mv -f $FILE ./upload/$WRT_INFO-$WRT_BRANCH-$WRT_WIFI-$WRT_DATE.manifest
+          done
 
       - name: Upload Factory Firmware
         if: success()
