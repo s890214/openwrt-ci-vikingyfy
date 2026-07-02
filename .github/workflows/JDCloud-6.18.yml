@@ -202,3 +202,12 @@ jobs:
           echo "========cache status========"
           echo "ccache: $(du -sh ./wrt/.ccache 2>/dev/null | cut -f 1 || echo 'none')"
           echo "staging: $(du -sh ./wrt/staging_dir 2>/dev/null | cut -f 1 || echo 'none')"
+
+      - name: Clean Old Releases
+        if: success() && inputs.WRT_UPLOAD == 'release'
+        uses: ophub/delete-releases-workflows@main
+        with:
+          gh_token: ${{secrets.GITHUB_TOKEN}}
+          delete_releases: true
+          releases_keep_latest: 5
+          delete_tags: true
