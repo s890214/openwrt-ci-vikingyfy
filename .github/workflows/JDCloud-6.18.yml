@@ -4,9 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       WRT_UPLOAD:
-        description: '上传方式：release 或 artifact'
+        description: '上传方式'
         default: 'release'
-        type: string
+        type: choice
+        options:
+          - release
+          - artifact
   # schedule:
   #   - cron: 0 20 * * *
 
