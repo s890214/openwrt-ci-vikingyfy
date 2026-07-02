@@ -2,6 +2,11 @@ name: JDCloud-6.18
 
 on:
   workflow_dispatch:
+    inputs:
+      WRT_UPLOAD:
+        description: '上传方式：release 或 artifact'
+        default: 'release'
+        type: string
   # schedule:
   #   - cron: 0 20 * * *
 
@@ -177,33 +182,19 @@ jobs:
             mv -f $FILE ./upload/$WRT_INFO-$WRT_BRANCH-$WRT_WIFI-$WRT_DATE.manifest
           done
 
-      - name: Upload Factory Firmware
-        if: success()
-        uses: actions/upload-artifact@main
+      - name: Release Firmware
+        if: success() && inputs.WRT_UPLOAD == 'release'
+        uses: softprops/action-gh-release@master
         with:
-          name: factory-jdcloud_re-cs-02
-          path: ./wrt/upload/*factory*.bin
+          tag_name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
+          files: ./wrt/upload/*.*
 
-      - name: Upload Sysupgrade Firmware
-        if: success()
+      - name: Upload Firmware To Artifact
+        if: success() && inputs.WRT_UPLOAD == 'artifact'
         uses: actions/upload-artifact@main
         with:
-          name: sysupgrade-jdcloud_re-cs-02
-          path: ./wrt/upload/*sysupgrade*.bin
-
-      - name: Upload Manifest
-        if: success()
-        uses: actions/upload-artifact@main
-        with:
-          name: manifest
-          path: ./wrt/upload/*.manifest
-
-      - name: Upload Config
-        if: success()
-        uses: actions/upload-artifact@main
-        with:
-          name: config
-          path: ./wrt/upload/Config-*.txt
+          name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
+          path: ./wrt/upload/*.*
 
       - name: Delete Old Cache
         if: always()
