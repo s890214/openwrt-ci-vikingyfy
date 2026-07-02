@@ -56,7 +56,9 @@ git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-
 # ============ OpenClash ============
 rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 rm -rf ../feeds/luci/applications/luci-app-openclash
+
 git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
+
 echo "更新 clash_meta ..."
 mkdir -p $GITHUB_WORKSPACE/wrt/files/etc/openclash/core
 CLASH_META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-arm64.tar.gz"
