@@ -170,12 +170,11 @@ jobs:
 
           find ./bin/targets/ -iregex ".*\(buildinfo\|json\|sha256sums\|packages\)$" -exec rm -rf {} +
 
-          for FILE in $(find ./bin/targets/ -type f -iname "*$WRT_TARGET*") ; do
+          for FILE in $(find ./bin/targets/ -type f -iname "*$WRT_TARGET*" -not -name "*.manifest") ; do
             EXT=$(basename $FILE | cut -d '.' -f 2-)
             ORIG=$(basename $FILE ."$EXT")
-            TYPE=$(echo "$ORIG" | grep -io 'factory\|sysupgrade\|kernel\|rootfs\|combined\|manifest' | head -1)
-            DEV=$(echo "$ORIG" | grep -io 'jdcloud[^-]*\|8devices[^-]*' | head -1)
-            [ -z "$DEV" ] && DEV="$WRT_TARGET"
+            TYPE=$(echo "$ORIG" | grep -io 'factory\|sysupgrade\|kernel\|rootfs\|combined' | head -1)
+            DEV=$(echo "$ORIG" | sed 's/^[^-]*-[^-]*-//' | sed 's/-squashfs-.*//')
             NEW_FILE="$DEV-$TYPE-$WRT_INFO-$WRT_BRANCH-$WRT_DATE.$EXT"
             mv -f $FILE ./upload/$NEW_FILE
           done
