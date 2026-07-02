@@ -35,6 +35,18 @@ UPDATE_PACKAGE() {
 	fi
 }
 
+# ============ 清理不需要的包 ============
+# 清理 feeds 里不需要的软件（避免编译进固件）
+rm -rf ../feeds/luci/applications/luci-app-appfilter
+rm -rf ../feeds/packages/net/open-app-filter
+rm -rf ../feeds/packages/net/frp
+rm -rf ../feeds/luci/applications/luci-app-ssr-plus
+rm -rf ../feeds/packages/net/{adguardhome,dns2tcp,dnstap,dpdk,haproxy,mwan3,ndppd,netcat,nginx,pcap-dnsproxy,pdnsd,redsocks,stubby}
+
+# OpenClash 依赖清理
+rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+rm -rf ../feeds/luci/applications/luci-app-openclash
+
 # ============ 主题 ============
 UPDATE_PACKAGE "argon" "jerrykuku/luci-theme-argon" "master"
 UPDATE_PACKAGE "luci-app-argon-config" "jerrykuku/luci-app-argon-config" "master"
@@ -50,9 +62,6 @@ git clone --depth=1 https://github.com/timsaya/openwrt-bandix package/openwrt-ba
 git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-bandix
 
 # ============ OpenClash ============
-# 移除 feeds 自带的旧版核心库
-rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
-rm -rf ../feeds/luci/applications/luci-app-openclash
 git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
 
 # 下载 clash_meta 核心
@@ -61,11 +70,3 @@ mkdir -p $GITHUB_WORKSPACE/wrt/files/etc/openclash/core
 CLASH_META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-arm64.tar.gz"
 wget -qO- $CLASH_META_URL | tar xOvz > $GITHUB_WORKSPACE/wrt/files/etc/openclash/core/clash_meta
 chmod +x $GITHUB_WORKSPACE/wrt/files/etc/openclash/core/clash*
-
-# ============ 清理不需要的包 ============
-# 清理 feeds 里不需要的软件（避免编译进固件）
-rm -rf ../feeds/luci/applications/luci-app-appfilter
-rm -rf ../feeds/packages/net/open-app-filter
-rm -rf ../feeds/packages/net/frp
-rm -rf ../feeds/luci/applications/luci-app-ssr-plus
-rm -rf ../feeds/packages/net/{adguardhome,dns2tcp,dnstap,dpdk,haproxy,mwan3,ndppd,netcat,nginx,pcap-dnsproxy,pdnsd,redsocks,stubby}
