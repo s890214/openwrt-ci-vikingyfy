@@ -211,6 +211,23 @@ jobs:
           name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
           path: ./wrt/upload/*.*
 
+      - name: Firmware Summary
+        if: success()
+        run: |
+          echo "### 📒 固件信息" >> $GITHUB_STEP_SUMMARY
+          echo "- 💻 设备：JDCloud AX6600 (RE-CS-02)" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚽ 源码：${WRT_REPO}" >> $GITHUB_STEP_SUMMARY
+          echo "- 💝 分支：${WRT_BRANCH}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔄 提交：${WRT_HASH}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 默认地址：${WRT_IP}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🧊 固件版本" >> $GITHUB_STEP_SUMMARY
+          echo "- 内核版本：${WRT_KVER}" >> $GITHUB_STEP_SUMMARY
+          echo "- 编译日期：${WRT_DATE}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 插件列表" >> $GITHUB_STEP_SUMMARY
+          echo "${WRT_LIST}" >> $GITHUB_STEP_SUMMARY
+
       - name: Delete Old Cache
         if: always()
         run: |
