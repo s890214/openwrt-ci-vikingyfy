@@ -190,20 +190,19 @@ jobs:
           tag_name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
           files: ./wrt/upload/*.*
           body: |
-            源码：${{env.WRT_REPO}}
-            分支：${{env.WRT_BRANCH}}
-            提交：${{env.WRT_HASH}}
+            ### 📒 固件信息
+            - 💻 设备：JDCloud AX6600 (RE-CS-02)
+            - ⚽ 源码：${{env.WRT_REPO}}
+            - 💝 分支：${{env.WRT_BRANCH}}
+            - 🔄 提交：${{env.WRT_HASH}}
+            - 🌐 默认地址：${{env.WRT_IP}}
 
-            配置：${{env.WRT_CONFIG}}
-            平台：${{env.WRT_TARGET}}
+            ### 🧊 固件版本
+            - 内核版本：${{env.WRT_KVER}}
+            - 编译日期：${{env.WRT_DATE}}
 
-            登录地址：${{env.WRT_IP}}
-            登录密码：无
-
-            WIFI名称：${{env.WRT_SSID}}
-
-            内核版本：${{env.WRT_KVER}}
-            插件列表：${{env.WRT_LIST}}
+            ### 📦 插件列表
+            ${{env.WRT_LIST}}
 
       - name: Upload Firmware To Artifact
         if: success() && inputs.WRT_UPLOAD == 'artifact'
