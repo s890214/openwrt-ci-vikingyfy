@@ -103,14 +103,7 @@ jobs:
             echo "caches missed!"
           fi
 
-          if ${{steps.check-cache.outputs.cache-hit != 'true'}}; then
-            CACHE_LIST=$(gh cache list --key "$WRT_CONFIG-$WRT_INFO" | cut -f 1)
-            for CACHE_KEY in $CACHE_LIST; do
-              gh cache delete $CACHE_KEY
-            done
 
-            echo "caches cleanup done!"
-          fi
 
       - name: Update Feeds
         run: |
@@ -236,6 +229,14 @@ jobs:
           echo "========cache status========"
           echo "ccache: $(du -sh ./wrt/.ccache 2>/dev/null | cut -f 1 || echo 'none')"
           echo "staging: $(du -sh ./wrt/staging_dir 2>/dev/null | cut -f 1 || echo 'none')"
+
+          echo "cleanup old caches..."
+          CACHE_LIST=$(gh cache list --key "$WRT_CONFIG-$WRT_INFO" | cut -f 1)
+          for CACHE_KEY in $CACHE_LIST; do
+            gh cache delete $CACHE_KEY
+            echo "deleted cache: $CACHE_KEY"
+          done
+          echo "caches cleanup done!"
 
       - name: Clean Old Releases
         if: success() && inputs.WRT_UPLOAD == 'release'
