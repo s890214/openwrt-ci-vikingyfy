@@ -104,5 +104,4 @@ CONFIG_PACKAGE_luci-app-smartdns=n
 CONFIG_PACKAGE_luci-app-passwall2=n
 CONFIG_PACKAGE_luci-app-wifischedule=n
 CONFIG_PACKAGE_luci-app-wechatpush=n
-CONFIG_PACKAGE_sqm-scripts-nss=n
 # CONFIG_RUBY_ENABLE_YJIT is not set
