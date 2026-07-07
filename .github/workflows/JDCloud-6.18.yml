@@ -53,10 +53,12 @@ jobs:
 
       - name: Initialization Values
         run: |
-          echo "WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
+          WRT_DATE_VALUE=$(TZ=UTC-8 date +"%y.%m.%d-%H.%M.%S")
+          echo "WRT_DATE=$WRT_DATE_VALUE" >> $GITHUB_ENV
           echo "WRT_MARK=${GITHUB_REPOSITORY%%/*}" >> $GITHUB_ENV
           echo "WRT_INFO=${WRT_SOURCE%%/*}" >> $GITHUB_ENV
           echo "WRT_TARGET=$(grep -m 1 -oP '^CONFIG_TARGET_\K[\w]+(?=\=y)' ./Config/$WRT_CONFIG.txt)" >> $GITHUB_ENV
+          echo "WRT_TAG=${WRT_CONFIG%%-*}-${WRT_SOURCE%%/*}-$WRT_DATE_VALUE" >> $GITHUB_ENV
           echo "WRT_KVER=none" >> $GITHUB_ENV
           echo "WRT_LIST=none" >> $GITHUB_ENV
 
@@ -163,7 +165,7 @@ jobs:
         run: |
           cd ./wrt/ && mkdir ./upload/
 
-          cp -f ./.config ./upload/Config-"$WRT_CONFIG"-"$WRT_INFO"-"$WRT_BRANCH"-"$WRT_DATE".txt
+          cp -f ./.config ./upload/Config-"$WRT_CONFIG"-"$WRT_INFO"-"$WRT_DATE".txt
 
           echo "WRT_KVER=$(find ./bin/targets/ -type f -name "*.manifest" -exec grep -oP '^kernel - \K[\d\.]+' {} \;)" >> $GITHUB_ENV
           echo "WRT_LIST=$(find ./bin/targets/ -type f -name '*.manifest' -exec grep -oP '^luci-app[^ ]*' {} \; | grep -vE 'argon-config|aurora-config' | tr '\n' ' ')" >> $GITHUB_ENV
@@ -175,19 +177,19 @@ jobs:
             ORIG=$(basename $FILE ."$EXT")
             TYPE=$(echo "$ORIG" | grep -io 'factory\|sysupgrade\|kernel\|rootfs\|combined' | head -1)
             DEV=$(echo "$ORIG" | sed 's/^[^-]*-[^-]*-//' | sed 's/-squashfs-.*//')
-            NEW_FILE="$DEV-$TYPE-$WRT_INFO-$WRT_BRANCH-$WRT_DATE.$EXT"
+            NEW_FILE="$DEV-$TYPE-$WRT_INFO-$WRT_DATE.$EXT"
             mv -f $FILE ./upload/$NEW_FILE
           done
 
           for FILE in $(find ./bin/targets/ -type f -name "*.manifest") ; do
-            mv -f $FILE ./upload/$WRT_INFO-$WRT_BRANCH-$WRT_DATE.manifest
+            mv -f $FILE ./upload/$WRT_INFO-$WRT_DATE.manifest
           done
 
       - name: Release Firmware
         if: success() && inputs.WRT_UPLOAD == 'release'
         uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
+          tag_name: ${{env.WRT_TAG}}
           files: ./wrt/upload/*.*
           body: |
             ### 📒 固件信息
@@ -208,7 +210,7 @@ jobs:
         if: success() && inputs.WRT_UPLOAD == 'artifact'
         uses: actions/upload-artifact@main
         with:
-          name: ${{env.WRT_CONFIG}}-${{env.WRT_INFO}}-${{env.WRT_BRANCH}}-${{env.WRT_DATE}}
+          name: ${{env.WRT_TAG}}
           path: ./wrt/upload/*.*
 
       - name: Firmware Summary
