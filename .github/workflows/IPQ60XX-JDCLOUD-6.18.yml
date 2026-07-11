@@ -224,7 +224,7 @@ jobs:
           echo "${WRT_LIST}" >> $GITHUB_STEP_SUMMARY
 
       - name: Delete Old Cache
-        if: always()
+        if: success()
         run: |
           echo "========cache status========"
           echo "ccache: $(du -sh ./wrt/.ccache 2>/dev/null | cut -f 1 || echo 'none')"
