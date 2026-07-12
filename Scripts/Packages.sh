@@ -45,8 +45,8 @@ rm -rf ../feeds/packages/net/{adguardhome,dns2tcp,dnstap,dpdk,haproxy,mwan3,ndpp
 # ============ 主题 ============
 UPDATE_PACKAGE "argon" "jerrykuku/luci-theme-argon" "master"
 UPDATE_PACKAGE "luci-app-argon-config" "jerrykuku/luci-app-argon-config" "master"
-UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
-UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
+# UPDATE_PACKAGE "aurora" "eamonxg/luci-theme-aurora" "master"
+# UPDATE_PACKAGE "aurora-config" "eamonxg/luci-app-aurora-config" "master"
 
 # ============ 你的软件 ============
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
