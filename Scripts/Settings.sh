@@ -7,7 +7,7 @@ WRT_PATH="$GITHUB_WORKSPACE/wrt"
 sed -i "s#_('Firmware Version'), (L\\.isObject(boardinfo\\.release) ? boardinfo\\.release\\.description + ' / ' : '') + (luciversion || ''),# \\
 _('Firmware Version'), \\
 (L.isObject(boardinfo.release) ? boardinfo.release.description + ' / ' : '') + \\
-'Built by SONG88 $(date \"+%Y-%m-%d\")',#" $WRT_PATH/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
+'Built by SONG88 $(date "+%Y-%m-%d")',#" $WRT_PATH/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
 
 # 修改默认IP（保持默认主机名 ImmortalWRT）
 CFG_FILE="$WRT_PATH/package/base-files/files/bin/config_generate"
