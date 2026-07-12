@@ -15,6 +15,8 @@ sed -i "s/192\\.168\\.[0-9]*\\.[0-9]*/$WRT_IP/g" $CFG_FILE
 
 # 设置默认主题为 argon
 sed -i "s/luci-theme-bootstrap/luci-theme-argon/g" $(find $WRT_PATH/feeds/luci/collections/ -type f -name "Makefile")
+# 删除 aurora 的 uci-defaults（防止被 feed 依赖拉进来覆盖 argon 设置）
+rm -f $WRT_PATH/package/base-files/files/etc/uci-defaults/30_luci-theme-aurora
 
 # 安装 WiFi uci-defaults 脚本（首次启动自动配置，已配置过不覆盖）
 install -Dm544 $GITHUB_WORKSPACE/Scripts/992_set-wifi-uci.sh $WRT_PATH/package/base-files/files/etc/uci-defaults/992_set-wifi-uci.sh
