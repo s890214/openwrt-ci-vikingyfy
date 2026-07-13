@@ -231,10 +231,15 @@ jobs:
           echo "staging: $(du -sh ./wrt/staging_dir 2>/dev/null | cut -f 1 || echo 'none')"
 
           echo "cleanup old caches..."
-          CACHE_LIST=$(gh cache list --key "$WRT_CONFIG-$WRT_INFO" | cut -f 1)
-          for CACHE_KEY in $CACHE_LIST; do
-            gh cache delete $CACHE_KEY
-            echo "deleted cache: $CACHE_KEY"
+          CURRENT_KEY="$WRT_CONFIG-$WRT_INFO-$WRT_HASH"
+          gh cache list --key "$WRT_CONFIG-$WRT_INFO" --json id,key --jq '.[] | "\(.id) \(.key)"' | while read -r ID KEY; do
+            if [ -z "$ID" ]; then continue; fi
+            if [ "$KEY" = "$CURRENT_KEY" ]; then
+              echo "keeping current cache: $ID ($KEY)"
+            else
+              gh cache delete "$ID"
+              echo "deleted old cache: $ID ($KEY)"
+            fi
           done
           echo "caches cleanup done!"
 
