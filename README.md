@@ -49,3 +49,9 @@
 
 - 修改配置文件后需重新编译
 - 切换内核版本（6.12↔6.18）需要不同的 NSS 固件版本，不可混用
+
+## 许可证
+
+本项目基于 [VIKINGYFY/OpenWRT-CI](https://github.com/VIKINGYFY/OpenWRT-CI)（MIT）修改，以 MIT 许可证发布，全文见 [LICENSE](LICENSE)。
+
+固件由 GitHub Actions 从公开源码（`VIKINGYFY/immortalwrt`）构建，源码见上文链接；固件中包含的 GPL 组件（OpenWrt 内核、OpenClash 等）遵循各自的许可证。
