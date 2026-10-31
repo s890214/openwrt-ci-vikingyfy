@@ -10,8 +10,10 @@ configure_wifi() {
 	local ssid=$5
 	local key=$6
 	local encryption=${7:-"psk2+ccmp"}
-	local now_encryption=$(uci get wireless.default_radio${radio}.encryption)
-	if [ -n "$now_encryption" ] && [ "$now_encryption" != "none" ]; then
+	# wireless 在 uci-defaults 之前已由 wifi config 生成（默认 ssid=OWRT、key=12345678），
+	# 因此按 SSID 是否已自定义判断，避免首刷时被“encryption 已有值”提前短路。
+	local now_ssid=$(uci -q get wireless.default_radio${radio}.ssid)
+	if [ -n "$now_ssid" ] && [ "$now_ssid" != "OWRT" ]; then
 		return 0
 	fi
 	uci -q batch <<EOF
