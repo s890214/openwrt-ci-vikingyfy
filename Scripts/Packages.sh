@@ -55,6 +55,12 @@ git clone --depth=1 https://github.com/timsaya/luci-app-bandix package/luci-app-
 # 去除 bandix 远程广告与捐赠二维码（保留 v0.12.9 功能改动），失败则中止构建
 # python3 $GITHUB_WORKSPACE/Scripts/bandix-noads.py package/luci-app-bandix/luci-app-bandix || exit 1
 
+# ============ UPnP（取上游 viking 包，替换 feeds 的 miniupnpd 2.3.9-r3） ============
+# 用 pkg 模式只拷 miniupnpd / luci-app-upnp 两个目录，避免把同仓的 homeproxy、sing-box
+# 等包一起带进树里与 feeds 同名包冲突
+UPDATE_PACKAGE "miniupnpd" "VIKINGYFY/packages" "main" "pkg"
+UPDATE_PACKAGE "luci-app-upnp" "VIKINGYFY/packages" "main" "pkg"
+
 # ============ OpenClash ============
 rm -rf ../feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 rm -rf ../feeds/luci/applications/luci-app-openclash
